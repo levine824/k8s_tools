@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: redis
+  labels:
+    name: redis
+  namespace: sdp-test
+spec:
+   replicas: 1
+   selector:
+     matchLabels:
+       app: redis
+   template:
+     metadata:
+       labels:
+         app: redis
+     spec:
+       containers:
+       - name: redis
+         image: redis:4.0
+         imagePullPolicy: IfNotPresent
+         ports:
+         - containerPort: 6379
+         command: 
+           - "redis-server"
+         args:
+         - "/etc/redis/redis.conf"
+         volumeMounts:
+           - name: redis-data
+             mountPath: /data
+           - name: redis-config
+             mountPath: /etc/redis
+       volumes:
+       - name: redis-config
+         configMap:
+           name: redis-config
+   volumeClaimTemplates:
+   - metadata:
+       name: redis-data
+     spec:
+       storageClassName: "harbor-ceph-rdb"
+       accessModes: [ "ReadWriteOnce" ]
+       resources:
+         requests:
+           storage: 10Gi

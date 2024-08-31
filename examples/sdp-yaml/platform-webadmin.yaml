@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: platform-webadmin
+  namespace: sdp-test
+  labels:
+    app: platform-webadmin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: platform-webadmin
+  template:
+    metadata:
+      labels:
+        app: platform-webadmin
+    spec:
+      containers:
+      - name: platform-webadmin
+        image: myharbor.zznode.com/sdp_test/platform-webadmin:v1
+        imagePullPolicy: Always       
+        ports:
+        - containerPort: 8803
+        env:
+        - name: "uri"
+          value: "http://config-service:8901"
+        - name: "port"
+          value: "8803"
+        - name: "defaultZone"
+          value: "http://eureka-service:8761/eureka/"
+        - name: "redisIp"
+          value: "redis-service:6379"
+        - name: "mysqlIp"
+          value: "jdbc:mysql://mysql-service:3306/esi?useUnicode=true&characterEncoding=utf8"
+        - name: "mqIp"
+          value: "rabbitmq"
+      restartPolicy: Always
+      imagePullSecrets:
+        - name: myharbor

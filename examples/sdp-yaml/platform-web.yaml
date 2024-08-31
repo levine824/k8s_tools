@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: platform-web
+  namespace: sdp-test
+  labels:
+    app: platform-web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: platform-web
+  template:
+    metadata:
+      labels:
+        app: platform-web
+    spec:
+      containers:
+      - name: platform-web
+        image: myharbor.zznode.com/sdp_test/platform-web:v1
+        imagePullPolicy: Always       
+        ports:
+        - containerPort: 8802
+        env:
+        - name: "uri"
+          value: "http://config-service:8901"
+        - name: "port"
+          value: "8802"
+        - name: "defaultZone"
+          value: "http://eureka-service:8761/eureka/"
+        - name: "redisIp"
+          value: "redis-service:6379"
+        - name: "mysqlIp"
+          value: "jdbc:mysql://mysql-service:3306/esi?useUnicode=true&characterEncoding=utf8"
+      restartPolicy: Always
+      imagePullSecrets:
+        - name: myharbor

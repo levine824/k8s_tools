@@ -1,0 +1,19 @@
+[client]
+default-character-set=utf8
+#socket=/var/run/mysqld/mysql.sock
+[mysql]
+default-character-set=utf8
+[mysqld]
+pid-file	= /var/run/mysqld/mysqld.pid
+socket		= /var/run/mysqld/mysqld.sock
+datadir		= /var/lib/mysql
+log-error	= /var/log/mysql/error.log
+
+#user = root
+# Disabling symbolic-links is recommended to prevent assorted security risks
+symbolic-links=0
+#default-character-set=utf8
+collation-server=utf8_general_ci
+init-connect='SET NAMES utf8'
+character-set-server=utf8
+

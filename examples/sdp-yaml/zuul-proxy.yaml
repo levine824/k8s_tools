@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zuul-proxy
+  namespace: sdp-test
+  labels:
+    app: zuul-proxy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zuul-proxy
+  template:
+    metadata:
+      labels:
+        app: zuul-proxy
+    spec:
+      containers:
+      - name: zuul-proxy
+        image: myharbor.zznode.com/sdp_test/zuul-proxy:v1
+        imagePullPolicy: Always          
+        ports:
+        - containerPort: 8801
+        env:
+        - name: "port"
+          value: "8801"
+        - name: "uri"
+          value: "http://config-service:8901"
+        - name: "defaultZone"
+          value: "http://eureka-service:8761/eureka/"
+      restartPolicy: Always
+      imagePullSecrets:
+        - name: myharbor

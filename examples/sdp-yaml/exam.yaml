@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: exam
+  namespace: sdp-test
+  labels:
+    app: exam
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: exam
+  template:
+    metadata:
+      labels:
+        app: exam
+    spec:
+      containers:
+      - name: exam
+        image: myharbor.zznode.com/sdp_test/exam:v1
+        imagePullPolicy: Always       
+        ports:
+        - containerPort: 9301
+        env:
+        - name: "uri"
+          value: "http://config-service:8901"
+        - name: "port"
+          value: "9301"
+        - name: "defaultZone"
+          value: "http://eureka-service:8761/eureka/"
+        - name: "redisIp"
+          value: "redis-service:6379"
+        - name: "mysqlIp"
+          value: "jdbc:mysql://mysql-service:3306/esi?useUnicode=true&characterEncoding=utf8"
+      restartPolicy: Always
+      imagePullSecrets:
+        - name: myharbor

@@ -1,0 +1,47 @@
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+    name: mysql
+    namespace: sdp-test
+spec:
+  selector:
+    matchLabels:
+      app: mysql
+  serviceName: "mysql"
+  #podManagementPolicy: Parallel
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: mysql
+        image: mysql:5.7
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: "asb#1234"
+        ports:
+        - containerPort: 3306
+          name: mysql
+        volumeMounts:
+        - name: mysql-data
+          subPath: mysql
+          mountPath: /var/lib/mysql
+        - name: mysql-cfg
+          mountPath: /etc/mysql/mysql.conf.d
+      volumes:
+      - name: mysql-cfg
+        configMap:
+          name: mysql-config
+  volumeClaimTemplates:
+  - metadata:
+      name: mysql-data
+    spec:
+      storageClassName: "harbor-ceph-rdb"
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 10Gi

@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: config-server
+  namespace: sdp-test
+  labels:
+    app: config-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: config-server
+  template:
+    metadata:
+      labels:
+        app: config-server
+    spec:
+      containers:
+      - name: config-server
+        image: myharbor.zznode.com/sdp_test/config-server:v1
+        imagePullPolicy: Always          
+        ports:
+        - containerPort: 8901
+        env:
+        - name: "port"
+          value: "8901"
+        - name: "defaultZone"
+          value: "http://eureka-service:8761/eureka/"
+      restartPolicy: Always
+      imagePullSecrets:
+        - name: myharbor
